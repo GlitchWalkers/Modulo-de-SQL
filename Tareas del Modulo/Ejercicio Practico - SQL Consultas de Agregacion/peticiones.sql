@@ -74,12 +74,12 @@ and
 	cli.id_cliente = cuen.id_cliente;
 	
 -- 4. Listar el promedio de edad de los clientes con saldo negativo.
-Select avg(cuen.saldo)
-from Clientes as cli, Cuentas as cuen
-where 
-	saldo < 0
-and
-	cli.id_cliente = cuen.id_cliente;
+SELECT AVG(cli.edad)
+FROM Clientes cli
+WHERE cli.id_cliente IN
+	(SELECT DISTINCT id_cliente
+	FROM Cuentas
+	WHERE saldo < 0)
 
 -- 5. Listar el nombre y cantidad de cuentas de quienes tienen más de una.
 Select cli.nombre, count(cuen.saldo) as "Numero de Cuentas"
@@ -94,7 +94,8 @@ Select cli.nombre, sum(cuen.saldo) as "Saldo en Cuentas"
 from Clientes as cli, Cuentas as cuen
 where 
 	cli.id_cliente = cuen.id_cliente
-group by cli.nombre;
+group by cli.nombre
+having count(cuen.saldo) >1;
 
 -- 7. Listar todos los clientes y su saldo combinado de todos aquellos clientes que tengan al menos una cuenta con saldo negativo.
 Select cli.nombre, sum(cuen.saldo) as "Saldo en Cuentas"
