@@ -73,12 +73,17 @@ order by nombre asc
 -- 2. Consulta para actores solo en soltera otra vez con sueldo mayor a 90
 select sov.nombre, sov.sueldo
 from reparto_soltera_otra_vez as sov
-where sueldo < 90
+LEFT JOIN reparto_papi_ricky AS pr 
+    ON sov.nombre = pr.nombre
+WHERE pr.nombre IS NULL 
+  AND sov.sueldo > 90
 
 -- 3. Consulta para los actores con sueldo menor a 85, pero que no se repitieran en ninguna de las dos
-select coalesce (sov.nombre, pr.nombre) --coalesce si en la primera tabla el valor es nulo, pasa al valor de la segunda
+select coalesce (sov.nombre, pr.nombre), COALESCE(sov.sueldo, pr.sueldo) AS sueldo
+--coalesce si en la primera tabla el valor es nulo, pasa al valor de la segunda
 from reparto_soltera_otra_vez as sov
 full outer join reparto_papi_ricky as pr
 	on	sov.nombre = pr.nombre
-where (sov.sueldo+pr.sueldo) is null --join devuelve null a sueldos de actores que no se repiten, si la suma es null el actor solo salio en una
+where (sov.sueldo+pr.sueldo) is null 
+    AND COALESCE(sov.sueldo, pr.sueldo) < 85
 order by sov.nombre asc

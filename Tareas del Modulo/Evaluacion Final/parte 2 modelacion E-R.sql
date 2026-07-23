@@ -20,10 +20,10 @@ CREATE TABLE reparto_actores
 	sueldo integer,
 	capitulos integer,
 	temporadas integer,
-	constraint fk_actores
+	constraint fk_reparto_teleserie
 		foreign key (id_teleserie)
 		references teleseries(id_teleserie),
-	constraint fk_teleseries
+	constraint fk_reparto_actor
 		foreign key (id_actor)
 		references actores(id_actor)
 );
@@ -113,4 +113,4 @@ join reparto_actores as ra
 	on ts.id_teleserie = ra.id_teleserie
 join actores
 	on ra.id_actor = actores.id_actor
-where ra.protagonista = true
+where ra.protagonista = true;
